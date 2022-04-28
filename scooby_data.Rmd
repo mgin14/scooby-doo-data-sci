@@ -1,0 +1,43 @@
+---
+title: "Scooby-Doo Data"
+author: "Melanie Gin"
+date: "4/27/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# load needed libraries
+library(tidyverse)
+
+# Get and read in data (code provided by creator for the TidyTuesday challenge)
+# Or read in the data manually
+scoobydoo <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-07-13/scoobydoo.csv')
+```
+
+# Introduction
+Scooby-Doo was a childhood favorite of many, including myself. There are 13 different series of this franchise with seasons ranging from 1-4. There are many specials and movies (animated and real) based on the series as well. The focus of this project will be based on the shows either in total or individually. 
+
+# Research Questions
+Questions:
+1. Does the amount of times characters say their catchphrases change by series?
+
+# Method
+The dataset is quantitative and manually created by plummye on [Kaggle](https://www.kaggle.com/datasets/williamschooleman/scoobydoo-complete) but the I found this dataset via jthomasmock on [GitHub](https://github.com/rfordatascience/tidytuesday/blob/master/data/2021/2021-07-13/readme.md) for a TidyTuesday data challenge.
+
+```{r cars}
+
+
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
