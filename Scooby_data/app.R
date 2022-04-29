@@ -11,7 +11,7 @@ library(shiny)
 library(tidyverse)
 library(tidyr)
 library(lubridate)
-library(RColorBrewer)
+library(dplyr)
 
 # Get and read in data (code provided by creator for the TidyTuesday challenge)
 # Or read in the data manually
@@ -63,7 +63,10 @@ ui <- fluidPage(
                                           height = "800px")),
                       tabPanel("Barplot",
                                plotOutput("bar_plot",
-                                                     height = "800px"))
+                                                     height = "800px")),
+                      tabPanel("Engagement",
+                               plotOutput("engage_bar_plot",
+                                          height = "800px"))
             
           )
            
@@ -112,8 +115,8 @@ server <- function(input, output) {
                                       "Scooby-Doo Mystery Incorporated", "Warner Home Video",
                                       "Be Cool, Scooby-Doo!", "Lego", "Scooby-Doo and Guess Who?")) +
           theme(axis.text.x = element_text(angle = 35, hjust=.75)) +
-          labs(y = "Percentage of episodes character caught culprit",
-               title = "The Frequency at which a Character has Caught the Culprit per TV Series") +
+          labs(y = "Percentage of episodes character from the group caught the culprit",
+               title = "How often a Character From the Group has Caught the Culprit per TV Series") +
           theme(text = element_text(size = 15))  
     })
     
@@ -131,7 +134,30 @@ server <- function(input, output) {
         labs(x = "count",
              y = "Motives",
              title = "Motives of the Crimes Throughout the Whole Franchise") +
-        theme(text = element_text(size = 20))  
+        theme(text = element_text(size = 20))
+    })
+    
+    
+    # What were the top ten most engaged episodes in the franchise up 'til July 2021? 
+    output$engage_bar_plot <- renderPlot({
+      engagement_tidy <- scoobydoo %>%
+        filter(engagement != "NULL") %>%
+        filter(format %in% c("TV Series", "TV Series (segmented)")) %>%
+        mutate(engagement = as.numeric(engagement))
+      
+      top_10_episodes <- engagement_tidy %>% 
+        top_n(n=10, engagement)
+      
+      top_10_episodes %>% 
+        ggplot(aes(x = engagement,
+                   y = reorder(title, engagement),
+                   fill = series_name)) +
+        geom_col()  +
+        geom_label(aes(label = engagement)) +
+        labs(x = "Number of IMDB Reviews",
+             y = "Epsiode Title",
+             title = "Top Ten Most Engaged Episodes by July 2021") +
+        theme(text = element_text(size = 20))
     })
 }
 
