@@ -44,12 +44,15 @@ character_options <- scoobydoo_tidy %>%
 ui <- fluidPage(
 
     # Application title
-    titlePanel("Scooby-Doo Series Data"),
+    titlePanel("Scooby-Doo TV Series Data"),
 
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
         sidebarPanel(
-            h4("Select tab to show what data to display")
+            h3("Select tab to show what data to display:"),
+            h4("- Distribution: How Often a Character From the Mystery Inc. has Caught the Culprit per TV Series"),
+            h4("- Motives: Motives of the Crimes Throughout the Whole Franchise"),
+            h4("- Engagement: Top Most Engaged Episodes by July 2021")
         ),
 
         # Show a plot of the generated distribution
@@ -61,10 +64,15 @@ ui <- fluidPage(
                                            choices = character_options),
                                plotOutput("distPlot",
                                           height = "800px")),
-                      tabPanel("Barplot",
+                      tabPanel("Motives",
                                plotOutput("bar_plot",
                                                      height = "800px")),
                       tabPanel("Engagement",
+                               sliderInput("num_episodes",
+                                           "Select the number of episodes to display:",
+                                           min = 1,
+                                           max = 50,
+                                           value = 10),
                                plotOutput("engage_bar_plot",
                                           height = "800px"))
             
@@ -73,6 +81,7 @@ ui <- fluidPage(
         )
     )
 )
+
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
@@ -84,7 +93,7 @@ server <- function(input, output) {
           filter(format %in% c("TV Series", "TV Series (segmented)")) %>%
           group_by(series_name) %>%
           count(caught_by) %>%
-          mutate(percentage = n/sum(n) * 100)
+          mutate(percentage = round(n/sum(n) * 100, digits = 0))
       
         highlighted_character <- all_series %>% 
           filter(caught_by == input$character_to_highlight)
@@ -105,6 +114,9 @@ server <- function(input, output) {
           geom_point(color = "grey")+
           geom_point(data = highlighted_character,
                      color = "red") +
+          geom_label(data = highlighted_character,
+                     color = "red",
+                     aes(label = percentage)) +
           scale_x_discrete(name = "Series Name (in order of year)", 
                              limits=c("Scooby Doo, Where Are You!","The New Scooby-Doo Movies",
                                       "The Scooby-Doo Show", "Scooby-Doo and Scrappy-Doo (first series)",
@@ -116,7 +128,7 @@ server <- function(input, output) {
                                       "Be Cool, Scooby-Doo!", "Lego", "Scooby-Doo and Guess Who?")) +
           theme(axis.text.x = element_text(angle = 35, hjust=.75)) +
           labs(y = "Percentage of episodes character from the group caught the culprit",
-               title = "How often a Character From the Group has Caught the Culprit per TV Series") +
+               title = "How Often a Character From the Mystery Inc. has Caught the Culprit per TV Series") +
           theme(text = element_text(size = 15))  
     })
     
@@ -145,10 +157,8 @@ server <- function(input, output) {
         filter(format %in% c("TV Series", "TV Series (segmented)")) %>%
         mutate(engagement = as.numeric(engagement))
       
-      top_10_episodes <- engagement_tidy %>% 
-        top_n(n=10, engagement)
-      
-      top_10_episodes %>% 
+      engagement_tidy %>% 
+        top_n(as.numeric(input$num_episodes), engagement) %>% 
         ggplot(aes(x = engagement,
                    y = reorder(title, engagement),
                    fill = series_name)) +
@@ -156,8 +166,9 @@ server <- function(input, output) {
         geom_label(aes(label = engagement)) +
         labs(x = "Number of IMDB Reviews",
              y = "Epsiode Title",
-             title = "Top Ten Most Engaged Episodes by July 2021") +
-        theme(text = element_text(size = 20))
+             title = "Top Most Engaged Episodes by July 2021") +
+        theme(text = element_text(size = 20)) +
+        scale_fill_hue(c=45, l=40)
     })
 }
 
