@@ -12,6 +12,7 @@ library(tidyverse)
 library(tidyr)
 library(lubridate)
 library(dplyr)
+library(RColorBrewer)
 
 # Get and read in data (code provided by creator for the TidyTuesday challenge)
 # Or read in the data manually
