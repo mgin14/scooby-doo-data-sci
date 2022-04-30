@@ -3,7 +3,8 @@
 # COURSE: ISTA 320: Data Visualization; Spring '22
 # ASSIGNMENT: Final Project
 # DUE DATE: 5/4/2022
-#
+# 
+# Find online: https://melgin.shinyapps.io/Scooby-Doo-TV-Series/
 
 library(shiny)
 library(tidyverse)
