@@ -49,10 +49,21 @@ ui <- fluidPage(
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
         sidebarPanel(
-            h3("Select tab to show what data to display:"),
-            h4("- Distribution: How Often a Character From the Mystery Inc. has Caught the Culprit per TV Series"),
-            h4("- Motives: Motives of the Crimes Throughout the Whole Franchise"),
-            h4("- Engagement: Top Most Engaged Episodes by July 2021")
+            h4("Select tab to show what data to display:"),
+            h5("- Distribution: How Often a Character From the Mystery Inc. has Caught the Culprit per TV Series"),
+            h5("- Motives: Motives of the Crimes Throughout the Whole Franchise"),
+            h5("- Engagement: Top Most Engaged Episodes by July 2021"),
+            h6("____________________________________"),
+            h4("Description:"),
+            h5("This is my final project for ISTA 320 Data Visualization. I chose to do my project on Scooby-Doo franchise, 
+               where I got the dataset from a July 2021 TidyTuesday Challenge found on GitHub from jthomasmock at 
+               https://github.com/rfordatascience/tidytuesday/blob/master/data/2021/2021-07-13/readme.md, 
+               which he got from Kaggle at https://www.kaggle.com/datasets/williamschooleman/scoobydoo-complete. 
+               I used the unupdated version so data is from July 2021 and not October 2021."),
+            h5("Research Questions:"),
+            h5("1. Who has caught the culprit the most per series? How has the frequency of this character catching the culprit change over the year as new series are created?"),
+            h5("2. Which motive was common throughout the franchise?"),
+            h5("3. What were the top most engaged episodes in the franchise up as of July 2021?")
         ),
 
         # Show a plot of the generated distribution
@@ -150,7 +161,7 @@ server <- function(input, output) {
     })
     
     
-    # What were the top ten most engaged episodes in the franchise up 'til July 2021? 
+    # What were the top most engaged episodes in the franchise as of July 2021? 
     output$engage_bar_plot <- renderPlot({
       engagement_tidy <- scoobydoo %>%
         filter(engagement != "NULL") %>%
@@ -166,7 +177,7 @@ server <- function(input, output) {
         geom_label(aes(label = engagement)) +
         labs(x = "Number of IMDB Reviews",
              y = "Epsiode Title",
-             title = "Top Most Engaged Episodes by July 2021") +
+             title = "Top Most Engaged Episodes as of July 2021") +
         theme(text = element_text(size = 20)) +
         scale_fill_hue(c=45, l=40)
     })
